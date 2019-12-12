@@ -4,7 +4,7 @@ var url = require('url');
 var fs = require('fs');
 var handlebars = require('handlebars');
 
-var contexts = require('contexts.js');
+var contexts = require('./contexts.js');
 
 // SERVER
 var app = express();
@@ -13,7 +13,7 @@ var app = express();
 app.get('/', function(request, response) {
     console.log('REQUEST : Index');
     
-    var compiled = handlebars.compile(fs.readFileSync("index.html").toString());
+    var compiled = handlebars.compile(fs.readFileSync("html/index.html").toString());
 	var html = compiled(contexts);
 	response.send(html);
 });
