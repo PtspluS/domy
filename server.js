@@ -13,7 +13,7 @@ var app = express();
 app.get('/', function(request, response) {
     console.log('REQUEST : Index');
     
-    var compiled = handlebars.compile(fs.readFileSync("html/index.html").toString());
+    var compiled = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
 	var html = compiled(contexts);
 	response.send(html);
 });
