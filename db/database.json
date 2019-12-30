@@ -1,0 +1,68 @@
+{
+    "places": {
+
+        "12345678": {
+            "name": "Le Chiba",
+
+            "menu": [
+                {
+                    "name": "Sushis",
+                    "price": "10.00",
+                    "info": "Riz et Poisson"
+                },
+                {
+                    "name": "Makis",
+                    "price": "8.00",
+                    "info": "Riz et Poisson"
+                },
+                {
+                    "name": "Yakitoris",
+                    "price": "5.80",
+                    "info": "2 pièces de brochettes"
+                },
+                {
+                    "name": "Soupe Miso",
+                    "price": "2.50"
+                }
+            ]
+        },
+
+        "hcGuk85f": {
+            "name": "Resto Universitaire",
+
+            "menu": [
+                {
+                    "name": "Friterie",
+                    "price": "3.30",
+                    "info": "Top bon!"
+                },
+                {
+                    "name": "Pasta",
+                    "price": "3.30",
+                    "info": "Qui va la seriously?"
+                },
+                {
+                    "name": "Self",
+                    "price": "3.30"
+                },
+                {
+                    "name": "Chicken",
+                    "price": "3.30",
+                    "info": "Poulet et poulets"
+                }
+            ]
+        }
+
+    },
+
+    "users": {
+
+        "784bgzdQ": {
+            "login": "jeanpaul",
+            "hash": "",
+
+            "firstname": "Jean-Paul",
+            "lastname": "Telecommande"
+        }
+    }
+}
