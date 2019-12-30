@@ -92,3 +92,4 @@ app.get(/(.*)/, function(request, response){
 var httpServer = http.createServer(app);
 
 httpServer.listen(8080);
+console.log("Server on");
