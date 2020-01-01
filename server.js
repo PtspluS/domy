@@ -4,8 +4,6 @@ var url = require('url');
 var fs = require('fs');
 var handlebars = require('handlebars');
 
-var contexts = require('./contexts.js');
-
 // SERVER
 var app = express();
 
@@ -15,12 +13,17 @@ app.get('/', function(request, response) {
 	
 	ids = Object.keys(JSON.parse(fs.readFileSync('db/database.json'))['places']);
 
-    var compiled = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
-	var html = compiled({
-		'navigation': fs.readFileSync("html/templates/navigation.hbs").toString(),
+    var compiledBloc = handlebars.compile(fs.readFileSync("html/templates/bloc_index.hbs").toString());
+	var htmlBloc = compiledBloc({
 		'random': "place/" + ids[Math.floor(Math.random() * ids.length)]
 	});
-	response.send(html);
+
+    var compiledMain = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
+	var htmlMain = compiledMain({
+		'main_bloc': htmlBloc
+	});
+
+	response.send(htmlMain);
 });
 
 // Get Place
@@ -38,7 +41,7 @@ app.get(/\/place\/([a-zA-Z0-9_]*)(\/.*)?/, function(request, response) {
 	
 	if (request.params[1] == '/menu') {
 		
-		var compiledMenu = handlebars.compile(fs.readFileSync("html/templates/menu.hbs").toString());
+		var compiledContent = handlebars.compile(fs.readFileSync("html/templates/bloc_place_menu.hbs").toString());
 
 		var menuList = [];
 
@@ -52,24 +55,48 @@ app.get(/\/place\/([a-zA-Z0-9_]*)(\/.*)?/, function(request, response) {
 			}
 		}
 		
-		var html = compiledMenu({
+		var htmlContent = compiledContent({
 			'name': place['name'],
 			'menu_list': menuList
 		});
-	
-		response.send(html);
+    
+		var compiledBloc = handlebars.compile(fs.readFileSync("html/templates/bloc_place.hbs").toString());
+		var htmlBloc = compiledBloc({
+			'name': place['name'],
+			'id': request.params[0],
+			'place_content_bloc': htmlContent
+		});
 
+		var compiledMain = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
+		var htmlMain = compiledMain({
+			'styles': ['place.css', 'place_menu.css'],
+			'main_bloc': htmlBloc
+		});
+	
+		response.send(htmlMain);
 		return;
 	}
+
+	// Else, basic welcome
+	var compiledContent = handlebars.compile(fs.readFileSync("html/templates/bloc_place_welcome.hbs").toString());
+	var htmlContent = compiledContent({
+		'name': place['name']
+	});
     
-	var compiled = handlebars.compile(fs.readFileSync("html/templates/place.hbs").toString());
-	
-	var html = compiled({
+	var compiledBloc = handlebars.compile(fs.readFileSync("html/templates/bloc_place.hbs").toString());
+	var htmlBloc = compiledBloc({
 		'name': place['name'],
-		'id': request.params[0]
+		'id': request.params[0],
+		'place_content_bloc': htmlContent
 	});
 
-	response.send(html);
+    var compiledMain = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
+	var htmlMain = compiledMain({
+		'styles': ['place.css'],
+		'main_bloc': htmlBloc
+	});
+
+	response.send(htmlMain);
 });
 
 // Get Scripts

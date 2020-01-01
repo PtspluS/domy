@@ -1,5 +1,27 @@
-<div>
-    {{navigation}}
-</div>
+<!DOCTYPE>
 
-<a href="/{{random}}">Resto hasardeux</a>
+<html>
+
+    <head>
+        <title>Domy</title>
+        {{#each styles}}
+        <link rel="stylesheet" href="/styles/{{this}}" type="text/css" />
+        {{/each}}
+        <link rel="stylesheet" href="/styles/main.css" type="text/css" />
+    </head>
+
+    <body>
+        <header>
+
+        </header>
+
+        <nav>
+            <a href="/" >Accueil</a>
+        </nav>
+
+        <div id="main_bloc" >
+            {{{main_bloc}}}
+        </div>
+    </body>
+
+</html>

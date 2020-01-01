@@ -1,0 +1,13 @@
+
+#place_left_div {
+    width: 30%;
+    background-color: #F5F5F5;
+    box-shadow: #555555 2px 2px 2px;
+}
+
+#place_right_div {
+    width: 65%;
+    background-color: #F5F5F5;
+    height: 100%;
+    box-shadow: #555555 2px 2px 2px;
+}
