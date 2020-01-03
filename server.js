@@ -3,22 +3,67 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var handlebars = require('handlebars');
+var helmet = require('helmet')
+// add for session 
+var user = require('./model/user')
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var User = require('./model/user');
+
 
 var contexts = require('./contexts.js');
 
-// SERVER
+// SERVER (always at the top)
 var app = express();
 
+//connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/testForAuth');
+var db = mongoose.connection;
+//handle mongo error
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  // we're connected!
+  console.log("Connected to the db");
+});
+//use sessions for tracking logins
+app.use(session({
+	secret: 'Fricadel',
+	resave: true,
+	saveUninitialized: false,
+	store: new MongoStore({
+	  mongooseConnection: db
+	})
+  }));
+// parse incoming requests
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// protection html avec helmet
+app.use(helmet());
+// les elements suivant ne sont pas ajoute par defaut mais on va les prendre quand meme
+app.use(helmet.noCache());
+app.use(helmet.referrerPolicy());
+app.use(helmet.permittedCrossDomainPolicies());
+
+var routes = require('./routes/router');
+app.use('/', routes);
+
 // Get Index
-app.get('/', function(request, response) {
-    console.log('REQUEST : Index');
+app.get('/main', function(request, response) {
+	console.log('REQUEST : Index');
+	response.set({ 
+		'Access-control-Allow-Origin': '*'
+		}); 
 	
 	ids = Object.keys(JSON.parse(fs.readFileSync('db/database.json'))['places']);
 
     var compiled = handlebars.compile(fs.readFileSync("html/templates/index.hbs").toString());
 	var html = compiled({
 		'navigation': fs.readFileSync("html/templates/navigation.hbs").toString(),
-		'random': "place/" + ids[Math.floor(Math.random() * ids.length)]
+		'random': "place/" + ids[Math.floor(Math.random() * ids.length)],
+		'Logout': "/Logout"
 	});
 	response.send(html);
 });
@@ -71,6 +116,12 @@ app.get(/\/place\/([a-zA-Z0-9_]*)(\/.*)?/, function(request, response) {
 
 	response.send(html);
 });
+
+
+// Get manage restaurant
+app.get(/\/manage\/([a-z0-9_]*)/, function(request, response){
+	console.log("Request : Management")
+}); 
 
 // Get Scripts
 app.get(/\/scripts\/([a-z0-9_]*\.js)/, function(request, response) {
